@@ -7,8 +7,8 @@ load_dotenv(dotenv_path="../.env")
 client = OpenAI()
 
 messages = [
-    {"role": "system", "content": "You are a helpful assistant."},
-    {"role": "user", "content": "Give me my horoscope for Taurus."},
+    {"role": "system", "content": "あなたは親切なアシスタントです。"},
+    {"role": "user", "content": "おうし座の今日の運勢を教えてください。"},
 ]
 
 tools = [
@@ -16,32 +16,32 @@ tools = [
         "type": "function",
         "function": {
             "name": "get_horoscope",
-            "description": "Get the horoscope for a given zodiac sign",
+            "description": "指定された星座の運勢を取得する",
             "parameters": {
                 "type": "object",
                 "properties": {
                     "sign": {
                         "type": "string",
-                        "description": "Zodiac sign, e.g. 'Taurus'",
+                        "description": "星座名（例: 'おうし座'）",
                     },
                     "day": {
                         "type": "string",
                         "enum": ["today", "tomorrow"],
-                        "description": "Which day to get the horoscope for",
+                        "description": "運勢を取得する日（今日または明日）",
                     },
                 },
                 "required": ["sign"],
                 "additionalProperties": False,
             },
+            "strict": True,
         },
     }
 ]
 
 response = client.chat.completions.create(
-    model="gpt-4o-mini",
+    model="gpt-5-mini",
     messages=messages,
     tools=tools,
-    tool_choice="auto",
 )
 
 message = response.choices[0].message
@@ -55,7 +55,7 @@ if message.tool_calls:
 
         if func_name == "get_horoscope":
             tool_result = {
-                "horoscope": f"Today's {func_args.get('sign')} horoscope: Your fortune is looking great!"
+                "horoscope": f"今日の{func_args.get('sign')}の運勢: 全体運は好調です！積極的に行動すると吉。"
             }
         else:
             raise RuntimeError(f"Unknown function: {func_name}")

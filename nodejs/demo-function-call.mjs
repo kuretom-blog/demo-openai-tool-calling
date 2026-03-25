@@ -3,8 +3,8 @@ import OpenAI from "openai";
 const client = new OpenAI(); // OPENAI_API_KEY 環境変数を自動で読み取る
 
 const messages = [
-    { role: "system", content: "You are a helpful assistant." },
-    { role: "user",   content: "Give me my horoscope for Taurus." },
+    { role: "system", content: "あなたは親切なアシスタントです。" },
+    { role: "user",   content: "おうし座の今日の運勢を教えてください。" },
 ];
 
 const tools = [
@@ -12,26 +12,26 @@ const tools = [
         type: "function",
         function: {
             name: "get_horoscope",
-            description: "Get the horoscope for a given zodiac sign",
+            description: "指定された星座の運勢を取得する",
             parameters: {
                 type: "object",
                 properties: {
-                    sign: { type: "string", description: "Zodiac sign, e.g. 'Taurus'" },
-                    day:  { type: "string", enum: ["today", "tomorrow"], description: "Which day to get the horoscope for" },
+                    sign: { type: "string", description: "星座名（例: 'おうし座'）" },
+                    day:  { type: "string", enum: ["today", "tomorrow"], description: "運勢を取得する日（今日または明日）" },
                 },
                 required: ["sign"],
                 additionalProperties: false,
             },
+            strict: true,
         },
     },
 ];
 
 // ステップ1〜2: ツール定義を添えてモデルへ送信する
 const response = await client.chat.completions.create({
-    model: "gpt-4o-mini",
+    model: "gpt-5-mini",
     messages,
     tools,
-    tool_choice: "auto",
 });
 
 const message = response.choices[0].message;
@@ -47,7 +47,7 @@ if (message.tool_calls) {
         let toolResult;
         if (funcName === "get_horoscope") {
             // ダミーの実行結果（実務では外部APIやDBを呼び出す）
-            toolResult = { horoscope: `Today's ${funcArgs.sign} horoscope: Your fortune is looking great!` };
+            toolResult = { horoscope: `今日の${funcArgs.sign}の運勢: 全体運は好調です！積極的に行動すると吉。` };
         } else {
             throw new Error(`Unknown function: ${funcName}`);
         }
@@ -62,7 +62,7 @@ if (message.tool_calls) {
 
     // ステップ5: 最終応答を取得する
     const response2 = await client.chat.completions.create({
-        model: "gpt-4o-mini",
+        model: "gpt-5-mini",
         messages,
     });
 
