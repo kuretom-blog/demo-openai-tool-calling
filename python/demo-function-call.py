@@ -30,7 +30,7 @@ tools = [
                         "description": "運勢を取得する日（今日または明日）",
                     },
                 },
-                "required": ["sign"],
+                "required": ["sign", "day"],
                 "additionalProperties": False,
             },
             "strict": True,

@@ -19,7 +19,7 @@ const tools = [
                     sign: { type: "string", description: "星座名（例: 'おうし座'）" },
                     day:  { type: "string", enum: ["today", "tomorrow"], description: "運勢を取得する日（今日または明日）" },
                 },
-                required: ["sign"],
+                required: ["sign", "day"],
                 additionalProperties: false,
             },
             strict: true,
